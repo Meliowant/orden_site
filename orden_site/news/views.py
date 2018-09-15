@@ -1,8 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 
-from .models import News
+from .forms import AddNew
+from .models import News, Photo
+from django.utils import timezone
+from django.core.files.base import ContentFile
 
 # Create your views here.
 def index(request):
@@ -31,6 +34,6 @@ def add(request):
                 photo = Photo(new=new)
                 photo.image.save(f.name, ContentFile(data))
                 photo.save()
-            return redirect('')
+            return redirect('new/')
         else:
             return render(request, 'news/add.html', {'form': form})
