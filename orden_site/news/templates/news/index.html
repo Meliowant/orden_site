@@ -9,29 +9,31 @@
     <meta name="keywords" content="plast, ox, lytsar">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+<!--{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'news/style.css' %}" />
+-->
+
 </head>
 <body>
-
 
 <div id="starting">
     <div class="container">
         <div class="row">
             <h1>List of News
-                <button class="btn btn-success" data-toggle="modal" data-target="#addSingleNewsModal">ADD NEWS</button>
             </h1>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Published</th>
                         <th>Title</th>
-                        <th>Action</th>
+                       <!-- <th>Action</th> -->
                     </tr>
                 </thead>
                 <tbody>
                     {% if latest_news_list %}
                       {% for new in latest_news_list %}
                           <tr>
-                            <td scope="row">{{ new.id }}</td>
+                            <td scope="row">{{ new.pub_date }}</td>
                             <td><a href="/news/{{ new.id }}/">{{ new.title }}</a></td>
                             <!-- <td>
                                 <button class="btn btn-info" @click="getSingleNews(singleNews.news_id)">Edit</button>
@@ -41,154 +43,13 @@
                       {% endfor %}
                 </tbody>
             </table>
-
-        <!-- Add News Modal -->
-        <div class="modal fade" id="addSingleNewsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">ADD NEWS</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <form v-on:submit.prevent="addNews()">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="news_heading">News Heading</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        id="news_heading"
-                                        placeholder="Enter News Header"
-                                        v-model="newSingleNews.title"
-                                        required="required">
-                            </div>
-                            <div class="form-group">
-                                <label for="news_body">News Body</label>
-                                <textarea
-                                        class="form-control"
-                                        id="news_body"
-                                        placeholder="Enter News Body"
-                                        v-model="newSingleNews.content"
-                                        required="required"
-                                        rows="3"></textarea>
-                             </div>
-                        </div>
-                        <div class="modal-footer">
-                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                           <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="loading" v-if="loading==true">Loading&#8230;</div>
-        </div>
-        <!-- Edit News Modal -->
-
         </div>
     </div>
-    <div class="loading" v-if="loading==true">Loading&#8230;</div>
 </div>
 
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
-
-   <!-- bootrtap js files -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-<!-- vue.js files -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
-
-<script type="text/javascript">
-    newsElement = new Vue({
-        el: '#starting',
-        delimiters: ['${', '}'],
-        data: {
-            news: [],
-            loading: false,
-            currentSingleNews: {},
-            message: null,
-            newSingleNews: { "title": null, "content": null, "pub_date": null },
-          },
-          mounted: function() { },
-          methods: {
-            getNews: function(){
-              this.loading = true;
-              this.$http.get('/api/news/')
-              .then((response) => {
-                this.news = response.data;
-                this.loading = falsel
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
-            },
-            getSingleNews: function(id){
-              this.loading = true;
-              this.$http.get('/api/news/${id}/')
-              .then((response) => {
-                this.currentSingleNews = response.data;
-                $("#editNewsModal").modal('show');
-                this.loading = false;
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
-            },
-            addNews: function() {
-              this.loading = true;
-              var d = new Date();
-              this.newSingleNews.pub_date = "" + d.getFullYear() + "-" +
-                  (d.getMonth() < 10 ? ("0" + d.getMonth()) : d.getMonth()) + "-" +
-                  (d.getDate() < 10 ? "0" + d.getDate() : d.getDate()) + " " +
-                  (d.getHours() < 10 ? "0" + d.getHours() : d.getHours()) + ":" +
-                  (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + ":" +
-                  (d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds());
-              console.log(this.newSingleNews.pub_date);
-              this.$http.post('/api/news/', this.newSingleNews)
-              .then((response) => {
-                this.loading = false;
-                this.getNews();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
-            },
-            updateSingleNews: function() {
-              this.loading = true;
-              this.$http.put('/api/news/${this.currentSingleNews.news_id}/',
-                  this.currentSingleNews)
-                .then((response) => {
-                  this.loading = false;
-                  this.currentSingleNews = response.data;
-                  this.getNews();
-                })
-                .catch((err) => {
-                  this.loading = false;
-                  console.log(err);
-                })
-            },
-            deleteSingleNews: function(id) {
-              this.loading = true;
-              this.$http.delete('/api/news/${id}/')
-              .then((response) => {
-                this.loading = false;
-                this.getNews();
-              })
-              .catch((err) => {
-                this.loading = false;
-                console.log(err);
-              })
-            }
-          }
-    });
-</script>
 
 </body>
 </html>
