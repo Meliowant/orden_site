@@ -22,8 +22,10 @@ def index(request):
 
 def detail(request, new_id):
     new = News.objects.get(pk=new_id)
-    p_list = Photo.objects.get(pk=new)
-    template = loader.get_template('news/detail.html')
+#    p_list={}
+#    p_list.extend(Photo.objects.get()) 
+    p_list = Photo.objects.filter(new=new)
+    template = loader.get_template('news/detail_1.html')
     context = {'new': new,'p_list': p_list}
     return HttpResponse(template.render(context, request))
 
