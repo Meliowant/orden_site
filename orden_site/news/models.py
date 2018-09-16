@@ -10,5 +10,7 @@ class News(models.Model):
         
 class Photo(models.Model):
     id = models.AutoField(primary_key=True)
-    image = models.ImageField(upload_to='photos')
+    image = models.ImageField(upload_to='news/static/news/photo/')
     new = models.ForeignKey(News, related_name='photos', on_delete=models.CASCADE)
+    def get_url(self):
+    	return self.image.image
