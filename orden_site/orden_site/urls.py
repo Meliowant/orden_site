@@ -18,9 +18,14 @@ from django.urls import path, include
 from .routers import router
 from django.views.generic import TemplateView
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 urlpatterns = [
     path('news/', include('news.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('vnews', TemplateView.as_view(template_name='index_vue.html')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
