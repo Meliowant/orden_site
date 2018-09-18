@@ -7,7 +7,11 @@
     <meta name="description" content="A simple OX page">
 
     <meta name="keywords" content="plast, ox, lytsar">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        p {text-indent: 55px; /* Отступ первой строки в пикселах */}
+        h1{text-align: center}
+    </style>
 
 <!--{% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'news/style.css' %}" />
@@ -18,38 +22,39 @@
 
 <div id="starting">
     <div class="container">
-        <div class="row">
-            <h1>List of News
+            <h1>
+                {{ new.title }}
             </h1>
+                {{ new.pub_date }}
+                <hr>
             <table class="table">
-                <thead>
-                    <tr>
-                        <th>Published</th>
-                        <th>Title</th>
-                       <!-- <th>Action</th> -->
-                    </tr>
-                </thead>
                 <tbody>
-                    {% if latest_news_list %}
-                      {% for new in latest_news_list %}
-                          <tr>
-                            <td scope="row">{{ new.pub_date }}</td>
-                            <td><a href="/news/{{ new.id }}/">{{ new.title }}</a></td>
-                            <!-- <td>
-                                <button class="btn btn-info" @click="getSingleNews(singleNews.news_id)">Edit</button>
-                                <button class="btn btn-danger" @click="deleteSingleNews(singleNews.news_id)">Delete</button>   
-                            </td>-->
-                          </tr>
-                      {% endfor %}
+{% autoescape off %}
+                <div class="container">            
+                    <h6>{{ new.content }}</h6>
+                </div>
+{% endautoescape %} 
+
                 </tbody>
             </table>
-        </div>
+
+
+            <table class="table">
+                <tbody>
+                    {% load staticfiles %}
+                          <tr>
+                                {% for photo in p_list %}
+                                     <td>
+                                        <a href="{{ photo.image.url }}"><img src="{{ photo.image.url }}" width="300" height="300" alt="{{ photo.image }}">
+                                     </td>
+                                {% endfor %}
+                          </tr>
+                </tbody>
+            </table>
+
+
     </div>
 </div>
-
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
 
 </body>
 </html>
